@@ -2,6 +2,7 @@ package com.novaapps.botler;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,6 +19,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.logging.Handler;
 
 import is.arontibo.library.ElasticDownloadView;
 
@@ -27,6 +31,8 @@ import is.arontibo.library.ElasticDownloadView;
 public class LoadingFragment extends Fragment {
 
     ElasticDownloadView submitButton;
+    Handler handler;
+    Boolean stop = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,47 +58,82 @@ public class LoadingFragment extends Fragment {
         submitButton = (ElasticDownloadView) getActivity().findViewById(R.id.elastic_download_view);
 
         submitButton.startIntro();
+        submitButton.setProgress(100);
 
         GetJson getJson = new GetJson();
-        getJson.execute("http://botler.cloudapp.net/api/stats/1");
+        getJson.execute("http://hu.pythonanywhere.com/api/stats/fake");
     }
 
+    public boolean isConnectedToServer(String url, int timeout) {
+        try {
+            URL myUrl = new URL(url);
+            URLConnection connection = myUrl.openConnection();
+            connection.setConnectTimeout(timeout);
+            connection.connect();
+            return true;
+        } catch (Exception e) {
+            // Handle your exceptions
+            return false;
+        }
+    }
+
+    public String getJson(String url) {
+        String s;
+
+        DefaultHttpClient client = new DefaultHttpClient();
+        StringBuilder sb = new StringBuilder();
+
+        HttpGet getRequest = new HttpGet(url);
+        try {
+
+            HttpResponse getResponse = client.execute(getRequest);
+            final int statusCode = getResponse.getStatusLine().getStatusCode();
+
+            if (statusCode != HttpStatus.SC_OK) {
+                Log.w(getClass().getSimpleName(),
+                        "Error " + statusCode + " for URL " + url);
+                return null;
+            }
+
+            HttpEntity getResponseEntity = getResponse.getEntity();
+            BufferedReader br = new BufferedReader(new InputStreamReader(getResponseEntity.getContent()));
+            while ((s = br.readLine()) != null) {
+                sb.append(s);
+            }
+
+        } catch (IOException e) {
+            getRequest.abort();
+            Log.e(getClass().getSimpleName(), e.getMessage());
+        }
+        s = sb.toString();
+
+        return s;
+    }
 
     private class GetJson extends AsyncTask<String, Integer, String> {
+        String s = "Fail";
 
 
         @Override
         protected String doInBackground(String... params) {
-            DefaultHttpClient client = new DefaultHttpClient();
 
-            HttpGet getRequest = new HttpGet(params[0]);
+            Log.e("DoInBG", "Begin");
+            if (isConnectedToServer(params[0], 1000)) {
+                Log.e("DoInBG", "connected");
 
-            String s = "Fail";
-            StringBuilder sb = new StringBuilder();
-            try {
+                return getJson(params[0]);
 
-                HttpResponse getResponse = client.execute(getRequest);
-                final int statusCode = getResponse.getStatusLine().getStatusCode();
 
-                if (statusCode != HttpStatus.SC_OK) {
-                    Log.w(getClass().getSimpleName(),
-                            "Error " + statusCode + " for URL " + params[0]);
-                    return null;
-                }
+            } else {
+                Log.e("DoInBG", "Not connected");
 
-                HttpEntity getResponseEntity = getResponse.getEntity();
-                BufferedReader br = new BufferedReader(new InputStreamReader(getResponseEntity.getContent()));
-                while ((s = br.readLine()) != null) {
-                    sb.append(s);
-                }
-
-            } catch (IOException e) {
-                getRequest.abort();
-                Log.e(getClass().getSimpleName(), e.getMessage());
+                s = "{\n" +
+                        "   \"wins\":3,\n" +
+                        "   \"losses\":4,\n" +
+                        "   \"ties\":2\n" +
+                        "}";
+                return s;
             }
-
-            return sb.toString();
-
         }
 
         @Override
@@ -102,21 +143,23 @@ public class LoadingFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("json", s);
 
-            LoadingFragment loadingFragment = new LoadingFragment();
-            loadingFragment.setArguments(bundle);
+            final StatsActivity statsActivity = new StatsActivity();
+            statsActivity.setArguments(bundle);
 
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.container, loadingFragment)
-                    .commit();
-                 }
+            new android.os.Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    submitButton.success();
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                            .replace(R.id.container, statsActivity)
+                            .commitAllowingStateLoss();
+                }
 
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            submitButton.setProgress(values[0]);
+            }, 2000);
 
         }
+
     }
 }

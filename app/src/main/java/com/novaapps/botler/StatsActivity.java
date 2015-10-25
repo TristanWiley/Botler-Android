@@ -1,29 +1,40 @@
 package com.novaapps.botler;
 
+import android.app.ActionBar;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.novaapps.botler.Cards.DetailAdapter;
+import com.novaapps.botler.Cards.Game;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class StatsActivity extends Fragment {
     PieChart pieChart;
+    String jsonName;
+    RecyclerView rv;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle b = getArguments();
+        jsonName = b.getString("json");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle bundle) {
@@ -38,11 +49,35 @@ public class StatsActivity extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         pieChart = (PieChart) getActivity().findViewById(R.id.pieChart);
+        rv = (RecyclerView) getActivity().findViewById(R.id.detail_recycler);
+
+        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
+        rv.setLayoutParams(layoutParams);
+
+        ParseJson p = new ParseJson(jsonName);
+        int win = p.getWins();
+        int loss = p.getLosses();
+        int ties = p.getTies();
+
+        int total = win + loss + ties;
+
+        BigDecimal a = new BigDecimal(win/loss);
+        BigDecimal b = a.setScale(2, RoundingMode.HALF_EVEN); // => BigDecimal("1.23")
+
+
+        ArrayList<Game> details = new ArrayList<>();
+        details.add(new Game("Total Games", String.valueOf(total)));
+        details.add(new Game("Win Loss Ration", String.valueOf(b)));
+
+        DetailAdapter adapter = new DetailAdapter(getActivity(), details);
+        rv.setAdapter(adapter);
+        Snackbar.make(getActivity().findViewById(R.id.stats_fragment), p.getWins(), Snackbar.LENGTH_LONG).show();
+
 
         setPieChart();
     }
 
-    public void setPieChart(){
+    public void setPieChart() {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColorTransparent(true);
         pieChart.setUsePercentValues(true);
@@ -80,20 +115,21 @@ public class StatsActivity extends Fragment {
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(ContextCompat.getColor(getActivity(), R.color.green));
         colors.add(ContextCompat.getColor(getActivity(), R.color.red));
-        colors.add(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+        colors.add(ContextCompat.getColor(getActivity(), R.color.colorAccent));
 
         dataSet.setColors(colors);
 
 
-
         PieData data = new PieData(xVals, dataSet);
         data.setValueTextSize(12f);
-        Legend lg = new Legend();
-        lg.setCustom(colors, xVals);
-        lg.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+//        Legend lg = new Legend();
+//        lg.setCustom(colors, xVals);
+//        lg.setPosition(Legend.LegendPosition.PIECHART_CENTER);
 
         pieChart.setData(data);
         pieChart.invalidate();
+
+
     }
 }
 

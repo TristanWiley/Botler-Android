@@ -1,14 +1,11 @@
 package com.novaapps.botler;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,17 +14,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import is.arontibo.library.ElasticDownloadView;
-
 public class StartFragment extends Fragment {
     EditText searchEdit;
     LinearLayout demo_card;
-    RelativeLayout includedLayout;
 
     TextView search_tv;
     TextView welcome_tv;
@@ -77,7 +70,7 @@ public class StartFragment extends Fragment {
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("project_name", "test");
+                        bundle.putString("project_name", searchEdit.getText().toString());
 
                         LoadingFragment loadingFragment = new LoadingFragment();
                         loadingFragment.setArguments(bundle);

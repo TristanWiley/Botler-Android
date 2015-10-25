@@ -1,63 +1,32 @@
 package com.novaapps.botler.Cards;
 
-import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
-
 /**
  * Created by Tristan on 10/24/2015.
  */
 public class Game {
 
     String name;
-    String total_wins;
-    String total_losses;
-    String total_tie;
-    @Nullable Drawable game_image;
+    String total_detail;
 
-    public Game(String name, String total_wins, String total_losses, String total_tie, Drawable game_image){
+    public Game(String name, String total_detail) {
         this.name = name;
-        this.total_wins = total_wins;
-        this.total_losses = total_losses;
-        this.total_tie = total_tie;
+        this.total_detail = total_detail;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getWins(){
-        return total_wins;
-    }
-
-    public String getLosses(){
-        return total_losses;
-    }
-
-    public String getTies(){
-        return total_tie;
-    }
-
-    public Drawable getImage(){
-        return game_image;
-    }
-
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setWins(String wins){
-        this.total_wins = wins;
+    public String getWins() {
+        return total_detail;
     }
 
-    public void setLosses(String losses){
-        this.total_losses = losses;
+    public void setWins(String wins) {
+        this.total_detail = wins;
     }
 
-    public void setTies(String ties){
-        this.total_tie = ties;
-    }
-
-    public void setDrawable(Drawable image){
-        this.game_image = image;
-    }
 }

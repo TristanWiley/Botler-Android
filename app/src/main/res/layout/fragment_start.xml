@@ -77,7 +77,7 @@
 
         <include
             android:id="@+id/demo_card"
-            layout="@layout/game_card_item"
+            layout="@layout/demo_card_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
