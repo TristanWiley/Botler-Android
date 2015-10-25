@@ -1,13 +1,15 @@
 package com.novaapps.botler;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -15,22 +17,32 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
-public class StatsActivity extends AppCompatActivity {
-
+public class StatsActivity extends Fragment {
     PieChart pieChart;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle bundle) {
+        super.onCreateView(inflater, null, bundle);
+        setHasOptionsMenu(true);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Inflate the layout
+        return inflater.inflate(R.layout.fragment_stats, container, false);
+    }
 
-        pieChart = (PieChart) findViewById(R.id.pieChart);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        pieChart = (PieChart) getActivity().findViewById(R.id.pieChart);
 
+        setPieChart();
+    }
+
+    public void setPieChart(){
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColorTransparent(true);
         pieChart.setUsePercentValues(true);
@@ -66,9 +78,9 @@ public class StatsActivity extends AppCompatActivity {
         PieDataSet dataSet = new PieDataSet(yVals, "");
 
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(ContextCompat.getColor(this, R.color.green));
-        colors.add(ContextCompat.getColor(this, R.color.red));
-        colors.add(ContextCompat.getColor(this, R.color.colorPrimary));
+        colors.add(ContextCompat.getColor(getActivity(), R.color.green));
+        colors.add(ContextCompat.getColor(getActivity(), R.color.red));
+        colors.add(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
 
         dataSet.setColors(colors);
 
@@ -83,5 +95,6 @@ public class StatsActivity extends AppCompatActivity {
         pieChart.setData(data);
         pieChart.invalidate();
     }
-
 }
+
+
