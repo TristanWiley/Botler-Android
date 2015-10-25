@@ -19,34 +19,35 @@
             android:padding="8dp">
 
             <TextView
-                android:id="@+id/game_title"
+                android:id="@+id/main_stats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hello World Title"
+                android:text="Statistics"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/black" />
 
+
             <TextView
-                android:id="@+id/game_won"
+                android:id="@+id/best_script"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3 games won"
+                android:text="Top Bot - bias_rock.py.json"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/game_loss"
+                android:id="@+id/most_wins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3 games lost"
+                android:text="Most Wins - 15"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/game_tied"
+                android:id="@+id/total_plays"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3 games tied"
+                android:text="Total Plays - 80"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/black" />
 

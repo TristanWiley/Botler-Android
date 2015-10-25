@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,10 +25,18 @@ public class StartFragment extends Fragment {
 
     TextView search_tv;
     TextView welcome_tv;
+    TextView tvMainStats;
+    TextView tvBestScript;
+    TextView tvMostWins;
+    TextView tvTotalWins;
+
+    TextInputLayout textInputLayout;
 
     RelativeLayout relativeLayout;
 
     FloatingActionButton submitButton;
+
+    EditText editText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle bundle) {
@@ -46,6 +55,7 @@ public class StartFragment extends Fragment {
         searchEdit = (EditText) getActivity().findViewById(R.id.editText);
 //        searchEdit.setGravity(Gravity.CENTER);
 
+        editText = (EditText) getActivity().findViewById(R.id.search_more);
         submitButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         search_tv = (TextView) getActivity().findViewById(R.id.search_tv);
         welcome_tv = (TextView) getActivity().findViewById(R.id.welcome_text);
@@ -53,41 +63,54 @@ public class StartFragment extends Fragment {
         relativeLayout = (RelativeLayout) getActivity().findViewById(R.id.rl);
         demo_card = (LinearLayout) getActivity().findViewById(R.id.demo_card);
 
+        textInputLayout = (TextInputLayout) getActivity().findViewById(R.id.text_input);
+        textInputLayout.isErrorEnabled();
+
+        tvMainStats = (TextView) demo_card.findViewById(R.id.main_stats);
+        tvBestScript = (TextView) demo_card.findViewById(R.id.best_script);
+        tvMostWins = (TextView) demo_card.findViewById(R.id.most_wins);
+        tvTotalWins = (TextView) demo_card.findViewById(R.id.total_plays);
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation animate_up = AnimationUtils.loadAnimation(getActivity(), R.anim.move_to_top);
-                submitButton.startAnimation(animate_up);
-                relativeLayout.startAnimation(animate_up);
-                demo_card.startAnimation(animate_up);
 
-                animate_up.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+                if (searchEdit.getText() != null) {
+                    Animation animate_up = AnimationUtils.loadAnimation(getActivity(), R.anim.move_to_top);
+                    submitButton.startAnimation(animate_up);
+                    relativeLayout.startAnimation(animate_up);
+                    demo_card.startAnimation(animate_up);
 
-                    }
+                    animate_up.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("project_name", searchEdit.getText().toString());
+                        }
 
-                        LoadingFragment loadingFragment = new LoadingFragment();
-                        loadingFragment.setArguments(bundle);
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("project_name", searchEdit.getText().toString());
 
-                        getActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                .replace(R.id.container, loadingFragment)
-                                .commit();
-                    }
+                            LoadingFragment loadingFragment = new LoadingFragment();
+                            loadingFragment.setArguments(bundle);
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                            getActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                    .replace(R.id.container, loadingFragment)
+                                    .commit();
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
+                        }
+                    });
+
+                } else {
+                    textInputLayout.setError("You need to enter a name");
+                }
             }
         });
 
@@ -112,7 +135,5 @@ public class StartFragment extends Fragment {
 
 
     }
-
-
 }
 
