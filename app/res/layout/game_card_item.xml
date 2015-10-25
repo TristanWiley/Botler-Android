@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto" android:id="@+id/card_item"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_margin="8dp"
+        card_view:cardCornerRadius="2dp">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="8dp">
+
+            <TextView android:id="@+id/game_title" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="Hello World Title"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/black" />
+
+            <TextView android:id="@+id/game_won" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="3 games won"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <TextView android:id="@+id/game_loss" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="3 games lost"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <TextView android:id="@+id/game_tied" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="3 games tied"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
