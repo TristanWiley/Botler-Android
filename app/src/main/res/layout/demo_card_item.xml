@@ -39,7 +39,7 @@
                 android:id="@+id/most_wins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Most Wins - 15"
+                android:text="Most Wins - 18"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/black" />
 
@@ -47,7 +47,7 @@
                 android:id="@+id/total_plays"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Plays - 80"
+                android:text="Total Plays - 163"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/black" />
 
